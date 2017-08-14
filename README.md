@@ -1,2 +1,11 @@
 # province-region-code
-获取省市区的code
+
+## start
+``` shell
+// install packages
+npm install
+// start server
+node server
+// gen json
+node build
+```
