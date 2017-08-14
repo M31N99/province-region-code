@@ -7,7 +7,6 @@ const path = require('path');
 const http = require('http');
 const request = require('request');
 const iconv = require('iconv-lite');
-const bufferhelper = require('bufferhelper');
 const cheerio = require('cheerio');
 
 const config = require('../config');
@@ -41,23 +40,24 @@ async function getProvice() {
 function getData(url) {
     if(!url) return [];
     return new Promise(function (resolve,reject) {
-        request(url, function (error, response, body) {
+        request({ url,encoding: null }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                // console.log(body)
+                const res = iconv.decode(body, 'gb2312').toString();
+                resolve(res);
             }
-        })
-        http.get(url, function(res){
-            const buffer = new bufferhelper();
-            res.on('data', function (chunk) {
-                console.log('=============data-data-data=========');
-                console.log(chunk);
-                buffer.concat(chunk);
-            });
-            res.on('end',function(){
-                console.log('=============end-end-end=========');
-                resolve(iconv.decode(buffer.toBuffer(),'GBK'));
-            });
         });
+        // http.get(url, function(res){
+        //     const buffer = new bufferhelper();
+        //     res.on('data', function (chunk) {
+        //         console.log('=============data-data-data=========');
+        //         // console.log(chunk);
+        //         buffer.concat(chunk);
+        //     });
+        //     res.on('end',function(){
+        //         console.log('=============end-end-end=========');
+        //         resolve(iconv.decode(buffer.toBuffer(),'GBK'));
+        //     });
+        // });
     })
 };
 /*

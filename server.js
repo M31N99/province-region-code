@@ -6,7 +6,7 @@ const express = require('express');
 const opn = require('opn');
 
 const config = require('./config');
-const spider = require('./src/test');
+const spider = require('./src/');
 
 const app = new express();
 const url = config.host + ':' + config.port;

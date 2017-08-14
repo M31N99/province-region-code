@@ -25,7 +25,6 @@
     "bufferhelper": "^0.2.1",
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.15.4",
-    "http": "0.0.0",
     "iconv-lite": "^0.4.18",
     "opn": "^5.1.0",
     "request": "^2.81.0"

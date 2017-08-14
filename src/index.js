@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-const http = require('http');
+const request = require('request');
 const iconv = require('iconv-lite');
 const bufferhelper = require('bufferhelper');
 const cheerio = require('cheerio');
@@ -15,8 +15,8 @@ const target = config.target.host;
 /*
 * @function: 获取省份数据
 * */
-async function getProvice() {
-    const body = await getData(zipUrl([2016, 'index']));
+async function getProvice(url) {
+    const body = await getData(url);
     const $ = cheerio.load(body);
     const lists = $('tr.provincetr a');
 
@@ -67,7 +67,7 @@ async function getCounty(url) {
     const $ = cheerio.load(body);
     const lists = $('tr.countytr');
 
-    console.log('getCounty==>','after body')
+    console.log('getCounty==>','after body');
     let items = [];
     for(let i = 0; i < lists.length; i++){
         const $this = $(lists[i]);
@@ -77,7 +77,7 @@ async function getCounty(url) {
         const value = $($a[1]).text();
         items.push({ code, value });
     }
-    console.log('getCounty==>','after forloop')
+    console.log('getCounty==>','after forloop');
     return items;
 }
 
@@ -87,16 +87,23 @@ async function getCounty(url) {
 function getData(url) {
     if(!url) return [];
     return new Promise(function (resolve,reject) {
-        http.get(url, function(res){
-            const buffer = new bufferhelper();
-            res.on('data', function (chunk) {
-                console.log('=============data-data-data=========')
-                buffer.concat(chunk);
-            });
-            res.on('end',function(){
-                console.log('=============end-end-end=========')
-                resolve(iconv.decode(buffer.toBuffer(),'GBK'));
-            });
+        // http.get(url, function(res){
+        //     const buffer = new bufferhelper();
+        //     res.on('data', function (chunk) {
+        //         console.log('=============data-data-data=========');
+        //         buffer.concat(chunk);
+        //     });
+        //     res.on('end',function(){
+        //         console.log('=============end-end-end=========');
+        //         resolve(iconv.decode(buffer.toBuffer(),'GBK'));
+        //     });
+        // });
+        request({ url, encoding: null }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                //gbk 或者 gb2312 都可以
+                const res = iconv.decode(body, 'gb2312').toString();
+                resolve(res);
+            }
         });
     })
 };
@@ -115,4 +122,4 @@ function zipUrl (para,type) {
     return res + (!type ? '.html' : '');
 }
 
-module.exports = getProvice();
+module.exports = getProvice(zipUrl([2016, 'index']));
