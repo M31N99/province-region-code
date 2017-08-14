@@ -28,9 +28,9 @@ async function getProvice(url) {
     for(let i = 0; i < lists.length; i++){
         console.log(i + 'i' + $(lists[i]).text());
         const $this = $(lists[i]);
-        const url = $this.attr('href');
-        const childrens = await getCity(zipUrl([2016,url],true));
-        const code = url.replace(/\D/g,'');
+        const nextUrl = $this.attr('href');
+        const childrens = await getCity(zipUrl([2016, nextUrl],true));
+        const code = nextUrl.replace(/\D/g,'');
         const value = $this.text();
         items.push({ code, value, childrens });
     }
@@ -52,8 +52,8 @@ async function getCity(url) {
     for(let i = 0; i < lists.length; i++){
         const $this = $(lists[i]);
         const $a = $this.find('a');
-        const url = $($a[0]).attr('href');
-        const childrens = await getCounty(zipUrl([2016,url],true));
+        const nextUrl = $($a[0]).attr('href');
+        const childrens = await getCounty(zipUrl([2016, nextUrl],true));
         const code = $($a[0]).text();
         const value = $($a[1]).text();
         items.push({ code, value, childrens });
@@ -63,7 +63,7 @@ async function getCity(url) {
 }
 
 /*
- * @function: 获取区级数据
+ * @function: 获取区级及其区级以下数据
  * @param: url 目标地址
  * */
 
@@ -78,10 +78,17 @@ async function getCounty(url) {
     for(let i = 0; i < lists.length; i++){
         const $this = $(lists[i]);
         const $a = $this.find('a');
-        const url = $($a[0]).attr('href');
+        const nextUrl = $($a[0]).attr('href');
         const code = $($a[0]).text();
         const value = $($a[1]).text();
-        items.push({ code, value });
+
+        if(typeof nextUrl === 'undefined'){
+            const childrens = await getData(nextUrl);
+            items.push({ code, value, childrens });
+        }else {
+            items.push({ code, value });
+        }
+
     }
     console.log('getCounty==>','after forloop');
     return items;
