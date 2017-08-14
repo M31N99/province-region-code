@@ -1,0 +1,33 @@
+{
+  "name": "province-region-code",
+  "version": "0.0.1",
+  "description": "省市区code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/2ue/province-region-code.git"
+  },
+  "keywords": [
+    "province",
+    "node",
+    "code"
+  ],
+  "author": "2ue",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2ue/province-region-code/issues"
+  },
+  "homepage": "https://github.com/2ue/province-region-code#readme",
+  "dependencies": {
+    "bufferhelper": "^0.2.1",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.15.4",
+    "http": "0.0.0",
+    "iconv-lite": "^0.4.18",
+    "opn": "^5.1.0",
+    "request": "^2.81.0"
+  }
+}
