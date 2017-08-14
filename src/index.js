@@ -3,24 +3,28 @@
  */
 
 const path = require('path');
+// const http = require('http');
 
 const request = require('request');
 const iconv = require('iconv-lite');
-const bufferhelper = require('bufferhelper');
+// const bufferhelper = require('bufferhelper');
 const cheerio = require('cheerio');
-
 const config = require('../config');
+
 const target = config.target.host;
 
 /*
 * @function: 获取省份数据
+* @param: url 目标地址
 * */
 async function getProvice(url) {
+    console.log('========getProvice start==========');
     const body = await getData(url);
     const $ = cheerio.load(body);
     const lists = $('tr.provincetr a');
 
     let items = [];
+    console.log('========getProvice getData succees==========');
     for(let i = 0; i < lists.length; i++){
         console.log(i + 'i' + $(lists[i]).text());
         const $this = $(lists[i]);
@@ -31,18 +35,19 @@ async function getProvice(url) {
         items.push({ code, value, childrens });
     }
     return items;
-};
+}
 
 /*
  * @function: 获取市级数据
+ * @param: url 目标地址
  * */
 async function getCity(url) {
 
-    console.log('getCity==>',url)
+    console.log('getCity==>',url);
     const body = await getData(url);
     const $ = cheerio.load(body);
     const lists = $('tr.citytr');
-    console.log('getCity==>','after body')
+    console.log('getCity==>','after body');
     let items = [];
     for(let i = 0; i < lists.length; i++){
         const $this = $(lists[i]);
@@ -53,16 +58,17 @@ async function getCity(url) {
         const value = $($a[1]).text();
         items.push({ code, value, childrens });
     }
-    console.log('getCity==>','after forloop')
+    console.log('getCity==>','after forloop');
     return items;
-};
+}
 
 /*
  * @function: 获取区级数据
+ * @param: url 目标地址
  * */
 
 async function getCounty(url) {
-    console.log('getCounty==>',url)
+    console.log('getCounty==>',url);
     const body = await getData(url);
     const $ = cheerio.load(body);
     const lists = $('tr.countytr');
@@ -83,6 +89,7 @@ async function getCounty(url) {
 
 /*
 * @function: 提取一个获取数据的方法
+ * @param: url 目标地址
 * */
 function getData(url) {
     if(!url) return [];
@@ -99,19 +106,23 @@ function getData(url) {
         //     });
         // });
         request({ url, encoding: null }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+            if (!error && response.statusCode === 200) {
+                console.log('========request success==========');
                 //gbk 或者 gb2312 都可以
                 const res = iconv.decode(body, 'gb2312').toString();
                 resolve(res);
+            }else {
+                console.log('========request fail==========');
             }
+
         });
     })
-};
+}
+
 /*
 * @function: 拼接url
 * @params: para 需要拼接的url数组
 * */
-
 function zipUrl (para,type) {
     let res = target;
     if(!para) return res + '.html';
