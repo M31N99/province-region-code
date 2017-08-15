@@ -3,11 +3,9 @@
  */
 
 const path = require('path');
-// const http = require('http');
 
 const request = require('request');
 const iconv = require('iconv-lite');
-// const bufferhelper = require('bufferhelper');
 const cheerio = require('cheerio');
 const config = require('../config');
 
@@ -29,7 +27,8 @@ async function getProvice(url) {
         console.log(i + 'i' + $(lists[i]).text());
         const $this = $(lists[i]);
         const nextUrl = $this.attr('href');
-        const childrens = await getCity(zipUrl([2016, nextUrl],true));
+        // const childrens = await getCity(zipUrl([2016, nextUrl],true));
+        const childrens = [];
         const code = nextUrl.replace(/\D/g,'');
         const value = $this.text();
         items.push({ code, value, childrens });
@@ -54,6 +53,7 @@ async function getCity(url) {
         const $a = $this.find('a');
         const nextUrl = $($a[0]).attr('href');
         const childrens = await getCounty(zipUrl([2016, nextUrl],true));
+        // const childrens = [];
         const code = $($a[0]).text();
         const value = $($a[1]).text();
         items.push({ code, value, childrens });
@@ -101,23 +101,11 @@ async function getCounty(url) {
 function getData(url) {
     if(!url) return [];
     return new Promise(function (resolve,reject) {
-        // http.get(url, function(res){
-        //     const buffer = new bufferhelper();
-        //     res.on('data', function (chunk) {
-        //         console.log('=============data-data-data=========');
-        //         buffer.concat(chunk);
-        //     });
-        //     res.on('end',function(){
-        //         console.log('=============end-end-end=========');
-        //         resolve(iconv.decode(buffer.toBuffer(),'GBK'));
-        //     });
-        // });
         request({ url, encoding: null }, function (error, response, body) {
             if (!error && response.statusCode === 200) {
                 console.log('========request success==========');
                 //gbk 或者 gb2312 都可以
-                const res = iconv.decode(body, 'gb2312').toString();
-                resolve(res);
+                resolve(iconv.decode(body, 'gb2312').toString());
             }else {
                 console.log('========request fail==========');
             }
