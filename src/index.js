@@ -15,7 +15,7 @@ const target = config.target.host;
 * @function: 获取省份数据
 * @param: {url} 目标地址
 * */
-async function getProvice(url) {
+const getProvice = async function (url) {
     console.log('========getProvice1 start==========');
     const body = await getData(url);
     const $ = cheerio.load(body);
@@ -34,13 +34,13 @@ async function getProvice(url) {
         items.push({ code, value, childrens });
     }
     return items;
-}
+};
 
 /*
  * @function: 获取市级数据
  * @param: {url} 目标地址
  * */
-async function getCity(url) {
+const getCity = async function (url) {
 
     console.log('getCity==>',url);
     const body = await getData(url);
@@ -60,14 +60,13 @@ async function getCity(url) {
     }
     console.log('getCity==>','after forloop');
     return items;
-}
+};
 
 /*
  * @function: 获取区级及其区级以下数据
  * @param: {url} 目标地址
  * */
-
-async function getCounty(url) {
+const getCounty = async function (url) {
     console.log('getCounty3==>',url);
     const body = await getData(url);
     const $ = cheerio.load(body);
@@ -89,13 +88,13 @@ async function getCounty(url) {
     }
     console.log('getCounty==>','after forloop');
     return items;
-}
+};
 
 /*
  * @function: 获取区级及其区级以下数据
  * @param: {url} 目标地址
  * */
-async function getTown(url) {
+const getTown = async function (url) {
     console.log('getCounty==>',url);
     const body = await getData(url);
     const $ = cheerio.load(body);
@@ -116,13 +115,13 @@ async function getTown(url) {
     }
     console.log('getCounty==>','after forloop');
     return items;
-}
+};
 
 /*
  * @function: 获取区级及其区级以下数据
  * @param: {url} 目标地址
  * */
-async function getVillage(url) {
+const getVillage = async function (url) {
     console.log('getVillage==>',url);
     const body = await getData(url);
     const $ = cheerio.load(body);
@@ -141,34 +140,13 @@ async function getVillage(url) {
     }
     console.log('getCounty==>','after forloop');
     return items;
-}
+};
 
 /*
-* @function: 提取一个获取数据的方法
+ * @function: 获取省级以下数据
  * @param: {url} 目标地址
-* */
-function getData(url) {
-    if(!url) return [];
-    return new Promise(function (resolve,reject) {
-        console.log('enter PROMISE============')
-        request({ url, encoding: null }, function (error, response, body) {
-            console.log('body',body)
-            if (!error && response.statusCode === 200) {
-                console.log('========request success==========');
-                //gbk 或者 gb2312 都可以
-                resolve(iconv.decode(body, 'gb2312').toString());
-            }else {
-                reject(error);
-                console.log('========request fail==========');
-            }
-        });
-    })
-}
-
-/*
-* @function: 获取省级以下数据
-* */
-async function getListData(url) {
+ * */
+const getListData = async function (url) {
     console.log('==entenr==>');
     const body = await getData(url);
     console.log('000000000')
@@ -193,13 +171,35 @@ async function getListData(url) {
 
     console.log('==end foorloop==>');
     return items;
-}
+};
+
+/*
+* @function: 提取一个获取数据的方法
+* @param: {url} 目标地址
+* */
+const getData = function (url) {
+    if(!url) return [];
+    return new Promise(function (resolve,reject) {
+        console.log('enter PROMISE============')
+        request({ url, encoding: null }, function (error, response, body) {
+            console.log('body',body)
+            if (!error && response.statusCode === 200) {
+                console.log('========request success==========');
+                //gbk 或者 gb2312 都可以
+                resolve(iconv.decode(body, 'gb2312').toString());
+            }else {
+                reject(error);
+                console.log('========request fail==========');
+            }
+        });
+    })
+};
 
 /*
 * @function: 拼接url
 * @params: {oldUrl} 上一次的url; {newUrl} 新的url尾
 * */
-function getUrl(oldUrl, newUrl) {
+const getUrl = function (oldUrl, newUrl) {
     if(!oldUrl) return target + '/2016/index.html';
     if(!newUrl) return oldUrl;
     const res = oldUrl.split('/');

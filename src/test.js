@@ -6,7 +6,6 @@ const path = require('path');
 
 const http = require('http');
 const bufferhelper = require('bufferhelper');
-const request = require('request');
 const iconv = require('iconv-lite');
 const cheerio = require('cheerio');
 
@@ -16,6 +15,7 @@ let index = 0;
 
 /*
  * @function: 获取省份数据
+ * @param: {url} 目标地址
  * */
 async function getProvice(url) {
     const body = await getData(url);
@@ -36,27 +36,10 @@ async function getProvice(url) {
 };
 
 /*
- * @function: 提取一个获取数据的方法
+ * @function: 获取省级以下数据
+ * @param: {url} 目标地址
  * */
-function getData(url) {
-    if(!url) return [];
-    return new Promise(function (resolve,reject) {
-        http.get(url, function(res){
-            const buffer = new bufferhelper();
-            res.on('data', function (chunk) {
-                console.log('=============data-data-data=========');
-                // console.log(chunk);
-                buffer.concat(chunk);
-            });
-            res.on('end',function(){
-                console.log('=============end-end-end=========');
-                resolve(iconv.decode(buffer.toBuffer(),'GBK'));
-            });
-        });
-    })
-};
-
-async function getListData(url) {
+const getListData = async function (url) {
     console.log('==entenr==>');
     const body = await getData(url);
     console.log('000000000')
@@ -83,14 +66,36 @@ async function getListData(url) {
     index++;
     console.log('==end foorloop==>');
     return items;
-}
+};
+
+/*
+ * @function: 提取一个获取数据的方法
+ * @param: {url} 目标地址
+ * */
+const getData = function getData(url) {
+    if(!url) return [];
+    return new Promise(function (resolve,reject) {
+        http.get(url, function(res){
+            const buffer = new bufferhelper();
+            res.on('data', function (chunk) {
+                console.log('=============data-data-data=========');
+                // console.log(chunk);
+                buffer.concat(chunk);
+            });
+            res.on('end',function(){
+                console.log('=============end-end-end=========');
+                resolve(iconv.decode(buffer.toBuffer(),'GBK'));
+            });
+        });
+    })
+};
 
 /*
  * @function: 拼接url
- * @params: para 需要拼接的url数组
+ * @params: {para} 需要拼接的url数组
  * */
 
-function zipUrl (para,type) {
+const zipUrl = function  (para,type) {
     let res = target;
     if(!para) return res + '.html';
     if(Object.prototype.toString.call(para) !== '[object Array]') return res + '/' + para + (!type ? '.html' : '');
@@ -100,7 +105,7 @@ function zipUrl (para,type) {
     return res + (!type ? '.html' : '');
 }
 
-function getUrl(oldUrl, newUrl) {
+const getUrl = function (oldUrl, newUrl) {
     if(!oldUrl) return target + '/2016/index.html';
     if(!newUrl) return oldUrl;
     const res = oldUrl.split('/');
